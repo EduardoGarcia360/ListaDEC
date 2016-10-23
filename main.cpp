@@ -12,6 +12,7 @@ using namespace std;
 
 //ArbolAVL* miarbol= (ArbolAVL*)malloc(sizeof(ArbolAVL));
 ListaDC* milista= (ListaDC*)malloc(sizeof(ListaDC));
+bool e=false;
 
 int main()
 {
@@ -38,5 +39,11 @@ int main()
     milista->insertar(50);
     if(!milista->estaVacia()){
         milista->mostrarLista();
+    }
+    e=milista->eliminar(20);
+    if(e){
+        milista->mostrarLista();
+    }else{
+        cout<<"nel papu"<<endl;
     }
 }

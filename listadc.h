@@ -15,6 +15,7 @@ struct ListaDC{
     bool estaVacia();
     void insertar(int d);
     void mostrarLista();
+    bool eliminar(int d);
 };
 
 #endif // LISTADC_H
