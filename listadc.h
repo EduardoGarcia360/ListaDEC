@@ -7,6 +7,7 @@ typedef struct ListaDC ListaDC;
 struct NodoDC{
     int dato;
     NodoDC* siguiente;
+    NodoDC* anterior;
     NodoDC(int dato);
 };
 
