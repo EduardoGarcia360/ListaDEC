@@ -72,29 +72,6 @@ bool ListaDC::eliminar(int d){
         }
     }
 
-    /*
-    while(actual->siguiente != ultimo && !encontrado){
-        if(actual->dato == d){
-            encontrado = true;
-        }else{
-            actual = actual->siguiente;
-        }
-    }
-    if(encontrado){
-        NodoDC* aux = actual->siguiente;
-        if(ultimo==ultimo->siguiente){
-            free(ultimo);
-            p=false;
-        }else{
-            if(aux==ultimo){
-                ultimo=actual;
-            }
-            actual->siguiente = aux->siguiente;
-        }
-        //free(aux);
-    }
-    **/
-
     return encontrado;
 }
 
