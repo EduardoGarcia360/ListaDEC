@@ -12,7 +12,7 @@ struct NodoDC{
 };
 
 struct ListaDC{
-    NodoDC* ultimo;
+    NodoDC* inicio;
     bool estaVacia();
     void insertar(int d);
     void mostrarLista();

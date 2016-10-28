@@ -6,8 +6,7 @@
 #include "sstream"
 
 using namespace std;
-bool p=false;
-int tam=0;
+bool cima=false;
 
 NodoDC::NodoDC(int d){
     this->dato = d;
@@ -16,62 +15,89 @@ NodoDC::NodoDC(int d){
 }
 
 bool ListaDC::estaVacia(){
-    return ultimo==NULL;
+    return inicio==NULL;
 }
 
 void ListaDC::insertar(int d){
     NodoDC* nuevo = new NodoDC(d);
-    if(ultimo!=NULL){
-        if(p==false){
-            ultimo=nuevo;
-            p=true;
-            tam += 1;
+    if(inicio){//inicio==null
+        if(cima==false){
+            inicio = nuevo;
+            cima=true;
         }else{
-            nuevo->siguiente = ultimo->siguiente;
-            ultimo->siguiente = nuevo;
-            tam += 1;
+            NodoDC* aux = inicio;
+            while(aux->siguiente != inicio){
+                aux = aux->siguiente;
+            }
+            aux->siguiente = nuevo;
+            nuevo->anterior = aux;
+            nuevo->siguiente = inicio;
+            inicio->anterior = nuevo;
         }
     }
 }
 
 void ListaDC::mostrarLista(){
     cout<<"==============================="<<endl;
-    NodoDC* aux = ultimo->siguiente;
-    do{
-        cout<<aux->dato<<endl;
-        aux = aux->siguiente;
-    }while(aux != ultimo->siguiente);
+    if(inicio==NULL){
+        cout<<"<===vacio===>"<<endl;
+    }else{
+        NodoDC* aux = inicio;
+        do{
+            cout<<aux->dato<<endl;
+            aux = aux->siguiente;
+        }while(aux!=inicio);
+    }
     cout<<"==============================="<<endl;
 }
 
 bool ListaDC::eliminar(int d){
-    NodoDC* actual;
-    NodoDC* aux;
     bool encontrado=false;
-    actual=ultimo;
-    aux=ultimo->siguiente;
-    int iteracion=0;
-
-    while(actual->siguiente != NULL){
-        if(iteracion==tam){
-            /*ya le dio una vuelta por lo tanto no encontro el dato*/
-            break;
-        }else{
-            if(aux->dato == d){
-                NodoDC* tmp = aux->siguiente;
-                actual->siguiente = tmp;
-                free(aux);
-                tam -= 1;
-                encontrado=true;
-                break;
+    if(inicio!=NULL){
+        NodoDC* aux = inicio;
+        NodoDC* ant = NULL;
+        while(aux->siguiente!=inicio){
+            if(aux->dato==d){
+                if(ant==NULL){
+                    if(aux->siguiente==inicio){
+                        /*solo hay un nodo*/
+                        aux->anterior = NULL;
+                        aux->siguiente = NULL;
+                        free(inicio);//inicio = NULL;
+                        free(aux);//inicio=NULL
+                        cima=false;
+                        encontrado=true;
+                        break;
+                    }else{
+                        /*es el nodo inicio*/
+                        NodoDC* tmp=aux;
+                        ant = aux->anterior;
+                        ant->siguiente = aux->siguiente;
+                        aux = aux->siguiente;
+                        aux->anterior = ant;
+                        inicio=aux;
+                        free(tmp); //ant=NULL;
+                        encontrado=true;
+                        break;
+                    }
+                }else{
+                    /*tiene nodos sig y ant*/
+                    NodoDC* tmp = aux;
+                    aux->anterior = NULL;
+                    ant->siguiente = aux->siguiente;
+                    aux = aux->siguiente;
+                    aux->anterior = ant;
+                    free(tmp);
+                    encontrado=true;
+                    break;
+                }
             }else{
-                actual = actual->siguiente;
+                /*si no es igual avanza*/
+                ant = aux;
                 aux = aux->siguiente;
-                iteracion += 1;
             }
         }
     }
-
     return encontrado;
 }
 
