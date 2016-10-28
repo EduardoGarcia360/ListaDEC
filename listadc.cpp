@@ -4,15 +4,15 @@
 #include "string.h"
 #include "iostream"
 #include "sstream"
+#include "fstream"
 #include "QString"
+#include "cstdlib"
 
 using namespace std;
 bool cima=false;
 
-NodoDC::NodoDC(char *nombreCobertura, int sumaAsegurada, int prima){
-    this->nombreCobertura = nombreCobertura;
-    this->sumaAsegurada = sumaAsegurada;
-    this->prima = prima;
+NodoDC::NodoDC(int d){
+    this->dato = d;
     this->siguiente = this;
     this->anterior = this;
 }
@@ -21,8 +21,12 @@ bool ListaDC::estaVacia(){
     return inicio==NULL;
 }
 
-void ListaDC::insertar(char *nombreCobertura, int sumaAsegurada, int prima){
-    NodoDC* nuevo = new NodoDC(nombreCobertura, sumaAsegurada, prima);
+NodoDC* ListaDC::obtenerInicio(){
+    return inicio;
+}
+
+void ListaDC::insertar(int d){
+    NodoDC* nuevo = new NodoDC(d);
     if(cima==false){
         inicio = nuevo;
         cima=true;
@@ -45,25 +49,19 @@ void ListaDC::mostrarLista(){
     }else{
         NodoDC* aux = inicio;
         do{
-            char* dato_nodo = (char*)malloc(6);
-            strcpy(dato_nodo, aux->nombreCobertura);
-            QString texto_n = QString::fromStdString(dato_nodo);
-            cout<<texto_n.toStdString()<<endl;
-
+            cout<<aux->dato<<endl;
             aux = aux->siguiente;
         }while(aux!=inicio);
     }
     cout<<"==============================="<<endl;
 }
 
-void ListaDC::modificar(char *clave, char *nombreCobertura, int sumaAsegurada, int prima){
+void ListaDC::modificar(int d, int n){
     if(inicio!=NULL){
         NodoDC* aux = inicio;
         while(aux->siguiente!=inicio){
-            if(strcmp(aux->nombreCobertura, clave)==0){
-                aux->nombreCobertura = nombreCobertura;
-                aux->sumaAsegurada = sumaAsegurada;
-                aux->prima = prima;
+            if(aux->dato == d){
+                aux->dato = n;
                 break;
             }else{
                 aux = aux->siguiente;
@@ -72,28 +70,7 @@ void ListaDC::modificar(char *clave, char *nombreCobertura, int sumaAsegurada, i
     }
 }
 
-NodoDC* ListaDC::buscar(char *clave){
-    if(inicio!=NULL){
-        bool encontrado=false;
-        NodoDC* aux = inicio;
-        while(aux->siguiente!=inicio){
-            if(strcmp(aux->nombreCobertura, clave)==0){
-                encontrado=true;
-                return aux;
-                break;
-            }else{
-                aux = aux->siguiente;
-            }
-        }
-        if(encontrado==false){
-            return NULL;
-        }
-    }else{
-        return NULL;
-    }
-}
-
-bool ListaDC::eliminar(char *nombreCobertura){
+bool ListaDC::eliminar(int d){
     bool encontrado=false;
     if(inicio!=NULL){
         NodoDC* aux = inicio;
@@ -108,7 +85,7 @@ bool ListaDC::eliminar(char *nombreCobertura){
             encontrado=true;
         }else{
             while(aux->siguiente!=inicio){
-                if(strcmp(aux->nombreCobertura, nombreCobertura)==0){
+                if(aux->dato==d){
                     if(ant==NULL){
                         if(aux->siguiente!=inicio){
                             /*es el "primer" nodo de la lista*/
@@ -142,4 +119,62 @@ bool ListaDC::eliminar(char *nombreCobertura){
         }
     }
     return encontrado;
+}
+
+int ListaDC::buscar(int clave){
+    if(inicio!=NULL){
+        bool encontrado=false;
+        NodoDC* aux = inicio;
+        while(aux->siguiente!=inicio){
+            if(aux->dato == clave){
+                encontrado=true;
+                return aux->dato;
+                break;
+            }else{
+                aux = aux->siguiente;
+            }
+        }
+        if(encontrado==false){
+            return NULL;
+        }
+    }else{
+        return NULL;
+    }
+}
+
+void ListaDC::graficar(NodoDC *ini){
+    QString cuerpo="digraph G{\n node[shape=circle, style=filled];\n edge[color=blue];rankdir=UD \n";
+    QString relacion="";
+
+    while(ini->siguiente!=inicio){
+        QString dato = QString::number(ini->dato);
+        cuerpo += "\""+dato+"\" [label=\""+dato+"\" shape=\"record\"];\n";
+
+        NodoDC* sig = ini->siguiente;
+        NodoDC* ant = ini->anterior;
+        relacion += "\""+dato+"\"->\""+QString::number(sig->dato)+"\"\n";
+        relacion += "\""+dato+"\"->\""+QString::number(ant->dato)+"\"\n";
+        ini = ini->siguiente;
+    }
+
+    QString dato = QString::number(ini->dato);
+    cuerpo += "\""+dato+"\" [label=\""+dato+"\" shape=\"record\"];\n";
+
+    NodoDC* sig = ini->siguiente;
+    NodoDC* ant = ini->anterior;
+    relacion += "\""+dato+"\"->\""+QString::number(sig->dato)+"\"\n";
+    relacion += "\""+dato+"\"->\""+QString::number(ant->dato)+"\"\n";
+
+    QString contenido = cuerpo + relacion + "\n}";
+
+    ofstream escritura;
+        escritura.open("/home/eduardo/Descargas/dato.dot", ios::out);
+        if(escritura.is_open()){
+            cout<<"abrio el archivo"<<endl;
+            escritura<<contenido.toStdString()<<endl;
+        }else{
+            cout<<"nell prro"<<endl;
+        }
+        escritura.close();
+        system("dot -Tpng /home/eduardo/Descargas/dato.dot -o /home/eduardo/datosalida.png");
 }
