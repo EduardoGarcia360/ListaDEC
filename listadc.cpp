@@ -4,12 +4,15 @@
 #include "string.h"
 #include "iostream"
 #include "sstream"
+#include "QString"
 
 using namespace std;
 bool cima=false;
 
-NodoDC::NodoDC(int d){
-    this->dato = d;
+NodoDC::NodoDC(char *nombreCobertura, int sumaAsegurada, int prima){
+    this->nombreCobertura = nombreCobertura;
+    this->sumaAsegurada = sumaAsegurada;
+    this->prima = prima;
     this->siguiente = this;
     this->anterior = this;
 }
@@ -18,8 +21,8 @@ bool ListaDC::estaVacia(){
     return inicio==NULL;
 }
 
-void ListaDC::insertar(int d){
-    NodoDC* nuevo = new NodoDC(d);
+void ListaDC::insertar(char *nombreCobertura, int sumaAsegurada, int prima){
+    NodoDC* nuevo = new NodoDC(nombreCobertura, sumaAsegurada, prima);
     if(cima==false){
         inicio = nuevo;
         cima=true;
@@ -42,19 +45,25 @@ void ListaDC::mostrarLista(){
     }else{
         NodoDC* aux = inicio;
         do{
-            cout<<aux->dato<<endl;
+            char* dato_nodo = (char*)malloc(6);
+            strcpy(dato_nodo, aux->nombreCobertura);
+            QString texto_n = QString::fromStdString(dato_nodo);
+            cout<<texto_n.toStdString()<<endl;
+
             aux = aux->siguiente;
         }while(aux!=inicio);
     }
     cout<<"==============================="<<endl;
 }
 
-void ListaDC::modificar(int d, int n){
+void ListaDC::modificar(char *clave, char *nombreCobertura, int sumaAsegurada, int prima){
     if(inicio!=NULL){
         NodoDC* aux = inicio;
         while(aux->siguiente!=inicio){
-            if(aux->dato == d){
-                aux->dato = n;
+            if(strcmp(aux->nombreCobertura, clave)==0){
+                aux->nombreCobertura = nombreCobertura;
+                aux->sumaAsegurada = sumaAsegurada;
+                aux->prima = prima;
                 break;
             }else{
                 aux = aux->siguiente;
@@ -63,7 +72,28 @@ void ListaDC::modificar(int d, int n){
     }
 }
 
-bool ListaDC::eliminar(int d){
+NodoDC* ListaDC::buscar(char *clave){
+    if(inicio!=NULL){
+        bool encontrado=false;
+        NodoDC* aux = inicio;
+        while(aux->siguiente!=inicio){
+            if(strcmp(aux->nombreCobertura, clave)==0){
+                encontrado=true;
+                return aux;
+                break;
+            }else{
+                aux = aux->siguiente;
+            }
+        }
+        if(encontrado==false){
+            return NULL;
+        }
+    }else{
+        return NULL;
+    }
+}
+
+bool ListaDC::eliminar(char *nombreCobertura){
     bool encontrado=false;
     if(inicio!=NULL){
         NodoDC* aux = inicio;
@@ -78,7 +108,7 @@ bool ListaDC::eliminar(int d){
             encontrado=true;
         }else{
             while(aux->siguiente!=inicio){
-                if(aux->dato==d){
+                if(strcmp(aux->nombreCobertura, nombreCobertura)==0){
                     if(ant==NULL){
                         if(aux->siguiente!=inicio){
                             /*es el "primer" nodo de la lista*/
@@ -113,4 +143,3 @@ bool ListaDC::eliminar(int d){
     }
     return encontrado;
 }
-

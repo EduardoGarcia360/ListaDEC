@@ -5,19 +5,22 @@ typedef struct NodoDC NodoDC;
 typedef struct ListaDC ListaDC;
 
 struct NodoDC{
-    int dato;
+    char* nombreCobertura;
+    int sumaAsegurada;
+    int prima;
     NodoDC* siguiente;
     NodoDC* anterior;
-    NodoDC(int dato);
+    NodoDC(char* nombreCobertura, int sumaAsegurada, int prima);
 };
 
 struct ListaDC{
     NodoDC* inicio;
     bool estaVacia();
-    void insertar(int d);
+    void insertar(char* nombreCobertura, int sumaAsegurada, int prima);
     void mostrarLista();
-    bool eliminar(int d);
-    void modificar(int d, int n);
+    bool eliminar(char* nombreCobertura);
+    void modificar(char* clave, char* nombreCobertura, int sumaAsegurada, int prima);
+    NodoDC* buscar(char* clave);
 };
 
 #endif // LISTADC_H
