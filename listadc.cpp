@@ -20,26 +20,24 @@ bool ListaDC::estaVacia(){
 
 void ListaDC::insertar(int d){
     NodoDC* nuevo = new NodoDC(d);
-    if(inicio){//inicio==null
-        if(cima==false){
-            inicio = nuevo;
-            cima=true;
-        }else{
-            NodoDC* aux = inicio;
-            while(aux->siguiente != inicio){
-                aux = aux->siguiente;
-            }
-            aux->siguiente = nuevo;
-            nuevo->anterior = aux;
-            nuevo->siguiente = inicio;
-            inicio->anterior = nuevo;
+    if(cima==false){
+        inicio = nuevo;
+        cima=true;
+    }else{
+        NodoDC* aux = inicio;
+        while(aux->siguiente != inicio){
+            aux = aux->siguiente;
         }
+        aux->siguiente = nuevo;
+        nuevo->anterior = aux;
+        nuevo->siguiente = inicio;
+        inicio->anterior = nuevo;
     }
 }
 
 void ListaDC::mostrarLista(){
     cout<<"==============================="<<endl;
-    if(inicio==NULL){
+    if(cima==false){
         cout<<"<===vacio===>"<<endl;
     }else{
         NodoDC* aux = inicio;
@@ -56,46 +54,47 @@ bool ListaDC::eliminar(int d){
     if(inicio!=NULL){
         NodoDC* aux = inicio;
         NodoDC* ant = NULL;
-        while(aux->siguiente!=inicio){
-            if(aux->dato==d){
-                if(ant==NULL){
-                    if(aux->siguiente==inicio){
-                        /*solo hay un nodo*/
-                        aux->anterior = NULL;
-                        aux->siguiente = NULL;
-                        free(inicio);//inicio = NULL;
-                        free(aux);//inicio=NULL
-                        cima=false;
-                        encontrado=true;
-                        break;
+        if(aux->siguiente==inicio){
+            /*solo hay un nodo*/
+            aux->anterior = NULL;
+            aux->siguiente = NULL;
+            inicio = NULL;
+            free(aux);
+            cima=false;
+            encontrado=true;
+        }else{
+            while(aux->siguiente!=inicio){
+                if(aux->dato==d){
+                    if(ant==NULL){
+                        if(aux->siguiente!=inicio){
+                            /*es el "primer" nodo de la lista*/
+                            NodoDC* tmp=aux;
+                            ant = aux->anterior;
+                            ant->siguiente = aux->siguiente;
+                            aux = aux->siguiente;
+                            aux->anterior = ant;
+                            inicio=aux;
+                            free(tmp);
+                            encontrado=true;
+                            break;
+                        }
                     }else{
-                        /*es el nodo inicio*/
-                        NodoDC* tmp=aux;
-                        ant = aux->anterior;
+                        /*esta en medio de dos nodos*/
+                        NodoDC* tmp = aux;
+                        aux->anterior = NULL;
                         ant->siguiente = aux->siguiente;
                         aux = aux->siguiente;
                         aux->anterior = ant;
-                        inicio=aux;
-                        free(tmp); //ant=NULL;
+                        free(tmp);
                         encontrado=true;
                         break;
                     }
                 }else{
-                    /*tiene nodos sig y ant*/
-                    NodoDC* tmp = aux;
-                    aux->anterior = NULL;
-                    ant->siguiente = aux->siguiente;
+                    /*si no es igual avanza*/
+                    ant = aux;
                     aux = aux->siguiente;
-                    aux->anterior = ant;
-                    free(tmp);
-                    encontrado=true;
-                    break;
                 }
-            }else{
-                /*si no es igual avanza*/
-                ant = aux;
-                aux = aux->siguiente;
-            }
+            }//fin while
         }
     }
     return encontrado;
