@@ -17,6 +17,7 @@ struct ListaDC{
     void insertar(int d);
     void mostrarLista();
     bool eliminar(int d);
+    void modificar(int d, int n);
 };
 
 #endif // LISTADC_H

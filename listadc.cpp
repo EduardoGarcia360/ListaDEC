@@ -49,6 +49,20 @@ void ListaDC::mostrarLista(){
     cout<<"==============================="<<endl;
 }
 
+void ListaDC::modificar(int d, int n){
+    if(inicio!=NULL){
+        NodoDC* aux = inicio;
+        while(aux->siguiente!=inicio){
+            if(aux->dato == d){
+                aux->dato = n;
+                break;
+            }else{
+                aux = aux->siguiente;
+            }
+        }
+    }
+}
+
 bool ListaDC::eliminar(int d){
     bool encontrado=false;
     if(inicio!=NULL){
