@@ -146,6 +146,7 @@ void ListaDC::graficar(NodoDC *ini){
     QString cuerpo="digraph G{\n node[shape=circle, style=filled];\n edge[color=blue];rankdir=UD \n";
     QString relacion="";
 
+    /*recorre toda la lista pero no si hay solo un nodo*/
     while(ini->siguiente!=inicio){
         QString dato = QString::number(ini->dato);
         cuerpo += "\""+dato+"\" [label=\""+dato+"\" shape=\"record\"];\n";
@@ -157,6 +158,7 @@ void ListaDC::graficar(NodoDC *ini){
         ini = ini->siguiente;
     }
 
+    /*cuando solo hay un dato o falte el nodo inicio*/
     QString dato = QString::number(ini->dato);
     cuerpo += "\""+dato+"\" [label=\""+dato+"\" shape=\"record\"];\n";
 
@@ -164,17 +166,18 @@ void ListaDC::graficar(NodoDC *ini){
     NodoDC* ant = ini->anterior;
     relacion += "\""+dato+"\"->\""+QString::number(sig->dato)+"\"\n";
     relacion += "\""+dato+"\"->\""+QString::number(ant->dato)+"\"\n";
+    /*====================================*/
 
     QString contenido = cuerpo + relacion + "\n}";
 
     ofstream escritura;
-        escritura.open("/home/eduardo/Descargas/dato.dot", ios::out);
-        if(escritura.is_open()){
-            cout<<"abrio el archivo"<<endl;
-            escritura<<contenido.toStdString()<<endl;
-        }else{
-            cout<<"nell prro"<<endl;
-        }
-        escritura.close();
-        system("dot -Tpng /home/eduardo/Descargas/dato.dot -o /home/eduardo/datosalida.png");
+    escritura.open("/home/eduardo/Descargas/listadc.dot", ios::out);
+    if(escritura.is_open()){
+        cout<<"abrio el archivo"<<endl;
+        escritura<<contenido.toStdString()<<endl;
+    }else{
+        cout<<"nell prro"<<endl;
+    }
+    escritura.close();
+    system("dot -Tpng /home/eduardo/Descargas/listadc.dot -o /home/eduardo/listadc.png");
 }
