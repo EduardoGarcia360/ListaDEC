@@ -191,6 +191,6 @@ public:
 			cout << "nell prro" << endl;
 		}
 		escritura.close();
-		system("dot -Tpng C:\\Users\\Edu\\Downloads\\listadc.dot -o C:\\Users\\Edu\\Desktop\\listadc.png");
+		system("dot -Tpng C:\\Users\\Edu\\Downloads\\listadc.dot -O");
 	}
 };

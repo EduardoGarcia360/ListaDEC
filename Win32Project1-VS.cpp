@@ -19,6 +19,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	milista->insertar(46);
 	milista->insertar(74);
 	milista->mostrar();
+	listadc* inicio = milista->obtenerInicio();
+	milista->graficar(inicio);
 	system("pause");
 }
 
